@@ -4,5 +4,6 @@ const adminController = require('../controllers/adminController');
 router.get('/dashboard', adminController.viewDashboard);
 router.get('/products', adminController.viewProducts);
 router.get('/clients', adminController.viewClients);
+router.get('/news', adminController.viewNews);
 
 module.exports = router;

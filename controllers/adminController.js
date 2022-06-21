@@ -10,4 +10,8 @@ module.exports = {
   viewClients: (req, res) => {
     res.render('admin/clients/view_clients');
   },
+
+  viewNews: (req, res) => {
+    res.render('admin/news/view_news');
+  },
 };
