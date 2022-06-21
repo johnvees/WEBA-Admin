@@ -6,4 +6,8 @@ module.exports = {
   viewProducts: (req, res) => {
     res.render('admin/products/view_products');
   },
+
+  viewClients: (req, res) => {
+    res.render('admin/clients/view_clients');
+  },
 };
