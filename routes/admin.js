@@ -5,5 +5,6 @@ router.get('/dashboard', adminController.viewDashboard);
 router.get('/products', adminController.viewProducts);
 router.get('/clients', adminController.viewClients);
 router.get('/news', adminController.viewNews);
+router.get('/history', adminController.viewHistory);
 
 module.exports = router;

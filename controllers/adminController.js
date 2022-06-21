@@ -14,4 +14,8 @@ module.exports = {
   viewNews: (req, res) => {
     res.render('admin/news/view_news');
   },
+
+  viewHistory: (req, res) => {
+    res.render('admin/history/view_history');
+  },
 };
