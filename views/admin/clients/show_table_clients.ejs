@@ -22,6 +22,36 @@
               <th>Action</th>
             </tr>
           </thead>
+          <tbody>
+            <% for(let i = 0; i < clients.length; i++) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= clients[i].nama %></td>
+              <td>
+                <img
+                  src="http://localhost:3000/<%= clients[i].imageUrl %> "
+                  alt="imageUrl"
+                  height="70px"
+                  width="70px"
+                />
+              </td>
+              <td>
+                <a href="" class="btn btn-success btn-sm"
+                  ><i class="fas fa-eye"></i
+                ></a>
+                <a
+                  href="javascript:void()"
+                  type="button"
+                  class="btn btn-warning btn-sm button-update"
+                  ><i class="fas fa-edit"></i
+                ></a>
+                <a href="" class="btn btn-danger btn-sm"
+                  ><i class="fas fa-trash"></i
+                ></a>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
         </table>
       </div>
     </div>
