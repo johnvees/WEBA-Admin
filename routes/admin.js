@@ -9,8 +9,15 @@ router.get('/products', adminController.viewProducts);
 
 // endpoint clients
 router.get('/clients', adminController.viewClients);
-router.post('/clients', uploadSingle, adminController.addClients);
 router.get('/clients/detail-client/:id', adminController.detailClients);
+router.post('/clients', uploadSingle, adminController.addClients);
+router.get('/clients/update-client/:id', adminController.showUpdateClients);
+router.put(
+  '/clients/update-client/:id',
+  uploadSingle,
+  adminController.updateClients
+);
+router.delete('/clients/:id/delete', adminController.deleteClients);
 
 // endpoint news
 router.get('/news', adminController.viewNews);

@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
 const flash = require('connect-flash');
+const methodOverride = require('method-override');
 
 // import mongoose
 const mongoose = require('mongoose');
@@ -27,7 +28,7 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
+app.use(methodOverride('_method'));
 app.use(
   session({
     secret: 'keyboard cat',

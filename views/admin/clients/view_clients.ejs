@@ -48,7 +48,7 @@
           <%- include('show_table_clients.ejs') %> <%-
           include('add_clients.ejs') %>
         </div>
-        <% } else if(action === 'detail') { %>
+        <% } else if(action == 'detail') { %>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
             <a
@@ -59,12 +59,30 @@
               role="tab"
               aria-controls="home"
               aria-selected="true"
-              >Detail Clients</a
+              >Detail Client</a
             >
           </li>
         </ul>
         <div class="tab-content" id="myTabContent">
           <%- include('detail_clients.ejs') %>
+        </div>
+        <% } else if(action == 'update' ) { %>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link active"
+              id="home-tab"
+              data-toggle="tab"
+              href="#update-client"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+              >Update Client</a
+            >
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <%- include('update_clients.ejs') %>
         </div>
         <% } %>
       </div>
