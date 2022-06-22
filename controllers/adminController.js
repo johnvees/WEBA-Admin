@@ -26,6 +26,7 @@ module.exports = {
         clients,
         alert,
         title: 'WEBA Admin | Clients',
+        action: 'view',
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -42,6 +43,26 @@ module.exports = {
       req.flash('alertMessage', 'Success Add New Client');
       req.flash('alertStatus', 'success');
       res.redirect('/admin/clients');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/clients');
+    }
+  },
+
+  detailClients: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const clients = await Clients.findOne({ _id: id });
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/clients/view_clients', {
+        clients,
+        alert,
+        title: 'WEBA Admin | Detail Clients',
+        action: 'detail',
+      });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
       req.flash('alertStatus', 'danger');

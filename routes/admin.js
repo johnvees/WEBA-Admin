@@ -10,6 +10,7 @@ router.get('/products', adminController.viewProducts);
 // endpoint clients
 router.get('/clients', adminController.viewClients);
 router.post('/clients', uploadSingle, adminController.addClients);
+router.get('/clients/detail-client/:id', adminController.detailClients);
 
 // endpoint news
 router.get('/news', adminController.viewNews);
