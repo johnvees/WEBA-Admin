@@ -15,8 +15,36 @@
         <h1 class="h3 mb-4 text-gray-800">Clients</h1>
         <!-- End Heading -->
 
-        <%- include('table_clients.ejs') %> 
-
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link active"
+              id="home-tab"
+              data-toggle="tab"
+              href="#show-clients"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+              >Show Clients</a
+            >
+          </li>
+          <li class="nav-item" role="presentation">
+            <a
+              class="nav-link"
+              id="profile-tab"
+              data-toggle="tab"
+              href="#add-client"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+              >Add Client</a
+            >
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <%- include('show_table_clients.ejs') %> <%-
+          include('add_clients.ejs') %>
+        </div>
       </div>
       <!-- /.container-fluid -->
     </div>

@@ -1,0 +1,88 @@
+<div
+  class="tab-pane fade"
+  id="add-news"
+  role="tabpanel"
+  aria-labelledby="profile-tab"
+>
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <form action="/admin/news" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="name">Jenis</label>
+          <!-- <input
+            type="text"
+            class="form-control"
+            name="jenis"
+            placeholder="Masukkan jenis berita"
+            required
+          /> -->
+          <select class="form-control" name="jenis">
+            <option value="">Latest News</option>
+            <option value="">Popular News</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="name">Judul</label>
+          <input
+            type="text"
+            class="form-control"
+            name="judul"
+            placeholder="Masukkan judul berita"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Deskripsi</label>
+          <input
+            type="text"
+            class="form-control"
+            name="deskripsi"
+            placeholder="Masukkan deskripsi berita"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Penulis</label>
+          <input
+            type="text"
+            class="form-control"
+            name="penulis"
+            placeholder="Masukkan penulis berita"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Tanggal Rilis</label>
+          <input
+            type="date"
+            class="form-control"
+            name="tanggal"
+            placeholder="Masukkan tanggal rilis berita"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Isi</label>
+          <!-- <input
+            type="text"
+            class="form-control"
+            name="isi"
+            placeholder="Masukkan isi berita"
+            required
+          /> -->
+          <textarea
+            name="isi"
+            class="form-control"
+            placeholder="Masukkan isi berita"
+            required
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="name">Gambar</label>
+          <input type="file" class="form-control" name="gambar" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
