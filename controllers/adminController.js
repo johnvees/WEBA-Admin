@@ -62,11 +62,21 @@ module.exports = {
     res.redirect('/admin/signin');
   },
 
-  viewDashboard: (req, res) => {
-    res.render('admin/dashboard/view_dashboard', {
-      title: 'WEBA Admin | Dashboard',
-      user: req.session.user,
-    });
+  viewDashboard: async (req, res) => {
+    try {
+      const products = await Products.find();
+      const clients = await Clients.find();
+      const news = await News.find();
+      res.render('admin/dashboard/view_dashboard', {
+        title: 'WEBA Admin | Dashboard',
+        user: req.session.user,
+        products,
+        clients,
+        news,
+      });
+    } catch (error) {
+      res.redirect('/admin/dashboard');
+    }
   },
 
   // endpoint products
