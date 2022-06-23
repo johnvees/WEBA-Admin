@@ -1,5 +1,7 @@
 const Clients = require('../models/Client');
 const News = require('../models/Berita');
+const Products = require('../models/Product');
+const Image = require('../models/Image');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -11,10 +13,211 @@ module.exports = {
   },
 
   // endpoint products
-  viewProducts: (req, res) => {
-    res.render('admin/products/view_products', {
-      title: 'WEBA Admin | Products',
-    });
+  viewProducts: async (req, res) => {
+    try {
+      const products = await Products.find()
+        .populate({
+          path: 'gambarId',
+          select: 'id imageUrl',
+        })
+        .populate({ path: 'client', select: 'id nama' });
+      console.log(products);
+      const clients = await Clients.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/products/view_products', {
+        title: 'WEBA Admin | Products',
+        clients,
+        products,
+        alert,
+        action: 'view',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
+  },
+
+  detailProducts: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const products = await Products.findOne({ _id: id })
+        .populate({
+          path: 'gambarId',
+          select: 'id imageUrl',
+        })
+        .populate({ path: 'client', select: 'id nama' });
+      const clients = await Clients.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/products/view_products', {
+        title: 'WEBA Admin | Detail Product',
+        products,
+        clients,
+        alert,
+        action: 'detail',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
+  },
+
+  addProducts: async (req, res) => {
+    try {
+      const { kode, nama, client, deskripsi, detail, material } = req.body;
+      if (req.files.length > 0) {
+        const clients = await Clients.findOne({ _id: client });
+        const newProducts = {
+          client: clients._id,
+          kode,
+          nama,
+          deskripsi,
+          detail,
+          material,
+        };
+        const products = await Products.create(newProducts);
+        clients.productId.push({ _id: products._id });
+        await clients.save();
+        for (let i = 0; i < req.files.length; i++) {
+          const imageSave = await Image.create({
+            imageUrl: `images/${req.files[i].filename}`,
+          });
+          products.gambarId.push({ _id: imageSave._id });
+          await products.save();
+        }
+      }
+      req.flash('alertMessage', 'Success Add New Product');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/products');
+    } catch (error) {
+      console.log(error);
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
+  },
+
+  showUpdateProducts: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const products = await Products.findOne({ _id: id })
+        .populate({
+          path: 'gambarId',
+          select: 'id imageUrl',
+        })
+        .populate({ path: 'client', select: 'id nama' });
+      const clients = await Clients.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/products/view_products', {
+        title: 'WEBA Admin | Update Product',
+        clients,
+        products,
+        alert,
+        action: 'update',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
+  },
+
+  updateProducts: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { kode, nama, client, deskripsi, detail, material } = req.body;
+      const products = await Products.findOne({ _id: id })
+        .populate({
+          path: 'gambarId',
+          select: 'id imageUrl',
+        })
+        .populate({ path: 'client', select: 'id nama' });
+      if (req.files.length > 0) {
+        for (let i = 0; i < products.gambarId.length; i++) {
+          const imageUpdate = await Image.findOne({
+            _id: products.gambarId[i]._id,
+          });
+          await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`));
+          imageUpdate.imageUrl = `images/${req.files[i].filename}`;
+          await imageUpdate.save();
+        }
+        products.kode = kode;
+        products.nama = nama;
+        products.client = client;
+        products.deskripsi = deskripsi;
+        products.detail = detail;
+        products.material = material;
+        await products.save();
+        req.flash('alertMessage', 'Success Update Data Product');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/products');
+      } else {
+        products.kode = kode;
+        products.nama = nama;
+        products.client = client;
+        products.deskripsi = deskripsi;
+        products.detail = detail;
+        products.material = material;
+        await products.save();
+        req.flash('alertMessage', 'Success Update Data Product');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/products');
+      }
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
+  },
+
+  deleteClients: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const clients = await Clients.findOne({ _id: id });
+      await fs.unlink(path.join(`public/${clients.imageUrl}`));
+      await clients.remove();
+      req.flash('alertMessage', 'Success Delete Data Client');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/clients');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/clients');
+    }
+  },
+
+  deleteProducts: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const products = await Products.findOne({ _id: id }).populate('gambarId');
+      for (let i = 0; i < products.gambarId.length; i++) {
+        Image.findOne({ _id: products.gambarId[i]._id })
+          .then((image) => {
+            fs.unlink(path.join(`public/${image.imageUrl}`));
+            image.remove();
+          })
+          .catch((error) => {
+            req.flash('alertMessage', `${error.message}`);
+            req.flash('alertStatus', 'danger');
+            res.redirect('/admin/products');
+          });
+      }
+      await products.remove();
+      req.flash('alertMessage', 'Success Delete Data Product');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/products');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/products');
+    }
   },
 
   // endpoint clients

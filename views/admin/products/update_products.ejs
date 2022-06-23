@@ -1,13 +1,13 @@
 <div
-  class="tab-pane fade"
-  id="add-product"
+  class="tab-pane fade show active"
+  id="update-product"
   role="tabpanel"
   aria-labelledby="profile-tab"
 >
   <div class="card shadow mb-4">
     <div class="card-body">
       <form
-        action="/admin/products"
+        action="/admin/products/update-product/<%= products.id %>?_method=PUT"
         method="POST"
         enctype="multipart/form-data"
       >
@@ -18,6 +18,7 @@
             class="form-control"
             name="kode"
             placeholder="Masukkan kode produk"
+            value="<%= products.kode %>"
             required
           />
         </div>
@@ -28,13 +29,14 @@
             class="form-control"
             name="nama"
             placeholder="Masukkan nama produk"
+            value="<%= products.nama %>"
             required
           />
         </div>
         <div class="form-group">
           <label for="name">Client</label>
-          <select class="form-control" name="client">
-            <option value="">--- Nama Client ---</option>
+          <select class="form-control" name="client" required>
+            <option value="<%= products.client._id %>">--- <%= products.client.nama %> ---</option>
             <% for( let i = 0; i < clients.length; i++ ) { %>
             <option value="<%= clients[i].id %>"><%= clients[i].nama %></option>
             <% } %>
@@ -42,51 +44,36 @@
         </div>
         <div class="form-group">
           <label for="name">Deskripsi</label>
-          <!-- <input
-            type="text"
-            class="form-control"
-            name="isi"
-            placeholder="Masukkan isi berita"
-            required
-          /> -->
           <textarea
             name="deskripsi"
             class="form-control"
             placeholder="Masukkan deskripsi produk"
             required
-          ></textarea>
+          >
+<%= products.deskripsi%></textarea
+          >
         </div>
         <div class="form-group">
           <label for="name">Detail</label>
-          <!-- <input
-            type="text"
-            class="form-control"
-            name="isi"
-            placeholder="Masukkan isi berita"
-            required
-          /> -->
           <textarea
             name="detail"
             class="form-control"
             placeholder="Masukkan detail produk"
             required
-          ></textarea>
+          >
+<%= products.detail%></textarea
+          >
         </div>
         <div class="form-group">
           <label for="name">Material</label>
-          <!-- <input
-            type="text"
-            class="form-control"
-            name="isi"
-            placeholder="Masukkan isi berita"
-            required
-          /> -->
           <textarea
             name="material"
             class="form-control"
             placeholder="Masukkan material produk"
             required
-          ></textarea>
+          >
+<%= products.material%></textarea
+          >
         </div>
         <div class="form-group">
           <label for="name">Gambar Produk</label>
@@ -95,10 +82,10 @@
             class="form-control"
             name="image"
             multiple
-            required
           />
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="/admin/products" class="btn btn-warning">Cancel</a>
       </form>
     </div>
   </div>

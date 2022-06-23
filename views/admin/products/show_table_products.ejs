@@ -26,6 +26,51 @@
               <th>Action</th>
             </tr>
           </thead>
+          <tbody>
+            <% for( let i = 0; i < products.length; i++ ) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td><%= products[i].kode %></td>
+              <td><%= products[i].nama %></td>
+              <td><%= products[i].client.nama %></td>
+              <td>
+                <div style="max-height: 200px; overflow: hidden">
+                  <%= products[i].deskripsi %>
+                </div>
+              </td>
+              <td>
+                <div style="max-height: 200px; overflow: hidden">
+                  <%= products[i].detail %>
+                </div>
+              </td>
+              <td>
+                <div style="max-height: 200px; overflow: hidden">
+                  <%= products[i].material %>
+                </div>
+              </td>
+              <td>
+                <form
+                  action="/admin/products/<%= products[i].id %>/delete?_method=DELETE"
+                  method="POST"
+                >
+                  <a
+                    href="/admin/products/detail-product/<%= products[i].id %>"
+                    class="btn btn-success btn-sm"
+                    ><i class="fas fa-eye"></i
+                  ></a>
+                  <a
+                    href="/admin/products/update-product/<%= products[i].id %>"
+                    class="btn btn-warning btn-sm"
+                    ><i class="fas fa-edit"></i
+                  ></a>
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
         </table>
       </div>
     </div>

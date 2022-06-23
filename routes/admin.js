@@ -1,11 +1,21 @@
 const router = require('express').Router();
 const adminController = require('../controllers/adminController');
-const { uploadSingle } = require('../middlewares/multer');
+const { uploadSingle, uploadMultiple } = require('../middlewares/multer');
 
 router.get('/dashboard', adminController.viewDashboard);
 
 // endpoint products
 router.get('/products', adminController.viewProducts);
+router.post('/products', uploadMultiple, adminController.addProducts);
+router.get('/products/detail-product/:id', adminController.detailProducts);
+router.get('/products/update-product/:id', adminController.showUpdateProducts);
+router.put(
+  '/products/update-product/:id',
+  uploadMultiple,
+  adminController.updateProducts
+);
+router.delete('/products/:id/delete', adminController.deleteProducts);
+
 
 // endpoint clients
 router.get('/clients', adminController.viewClients);

@@ -10,10 +10,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  namaClient: {
-    type: String,
+  client: {
+    type: ObjectId,
     ref: 'Client',
-    required: true,
   },
   deskripsi: {
     type: String,

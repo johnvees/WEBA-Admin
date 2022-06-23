@@ -32,32 +32,32 @@
             <tr>
               <td><%= i + 1 %></td>
               <td>
-                <div style="height: 200px; overflow: hidden">
+                <div style="max-height: 200px; overflow: hidden">
                   <%= news[i].jenis %>
                 </div>
               </td>
               <td>
-                <div style="height: 200px; overflow: hidden; width: 200px">
+                <div style="max-height: 200px; overflow: hidden; width: 200px">
                   <%= news[i].judul %>
                 </div>
               </td>
               <td>
-                <div style="height: 200px; overflow: hidden; width: 200px">
+                <div style="max-height: 200px; overflow: hidden; width: 200px">
                   <%= news[i].deskripsi %>
                 </div>
               </td>
               <td>
-                <div style="height: 200px; overflow: hidden">
+                <div style="max-height: 200px; overflow: hidden">
                   <%= news[i].penulis %>
                 </div>
               </td>
               <td>
-                <div style="height: 200px; overflow: hidden; width: 200px">
+                <div style="max-height: 200px; overflow: hidden; width: 200px">
                   <%= news[i].tanggal.toLocaleString().split(',')[0] %>
                 </div>
               </td>
               <td>
-                <div style="height: 200px; overflow: hidden; width: 200px">
+                <div style="max-height: 200px; overflow: hidden; width: 200px">
                   <%= news[i].isi %>
                 </div>
               </td>
@@ -66,7 +66,7 @@
                   src="http://localhost:3000/<%= news[i].imageUrl %> "
                   alt="imageUrl"
                   height="200px"
-                  width="200px"
+                  style="object-fit: contain"
                 />
               </td>
               <td>
