@@ -3,13 +3,69 @@ const News = require('../models/Berita');
 const Products = require('../models/Product');
 const Image = require('../models/Image');
 const History = require('../models/Sejarah');
+const Users = require('../models/Users');
 const fs = require('fs-extra');
 const path = require('path');
+const bycrypt = require('bcryptjs');
 
 module.exports = {
+  viewSignin: async (req, res) => {
+    try {
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      if (req.session.user == null || req.session.user == undefined) {
+        res.render('index', {
+          alert,
+          title: 'Staycation | Login',
+        });
+      } else {
+        res.redirect('/admin/dashboard');
+      }
+      // console.log(category);
+    } catch (error) {
+      res.redirect('/admin/signin');
+    }
+  },
+
+  actionSignin: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await Users.findOne({ username: username });
+      if (!user) {
+        req.flash('alertMessage', 'User Not Found');
+        req.flash('alertStatus', 'danger');
+        res.redirect('/admin/signin');
+        return;
+      }
+      const isPasswordMatch = await bycrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        req.flash('alertMessage', 'Password Not Correct');
+        req.flash('alertStatus', 'danger');
+        res.redirect('/admin/signin');
+        return;
+      }
+
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+      };
+
+      res.redirect('/admin/dashboard');
+    } catch (error) {
+      res.redirect('/admin/signin');
+    }
+  },
+
+  actionLogout: (req, res) => {
+    req.session.destroy();
+    res.redirect('/admin/signin');
+  },
+
   viewDashboard: (req, res) => {
     res.render('admin/dashboard/view_dashboard', {
       title: 'WEBA Admin | Dashboard',
+      user: req.session.user,
     });
   },
 
@@ -29,6 +85,7 @@ module.exports = {
       const alert = { message: alertMessage, status: alertStatus };
       res.render('admin/products/view_products', {
         title: 'WEBA Admin | Products',
+        user: req.session.user,
         clients,
         products,
         alert,
@@ -60,6 +117,7 @@ module.exports = {
         clients,
         alert,
         action: 'detail',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -122,6 +180,7 @@ module.exports = {
         products,
         alert,
         action: 'update',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -178,22 +237,6 @@ module.exports = {
     }
   },
 
-  deleteClients: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const clients = await Clients.findOne({ _id: id });
-      await fs.unlink(path.join(`public/${clients.imageUrl}`));
-      await clients.remove();
-      req.flash('alertMessage', 'Success Delete Data Client');
-      req.flash('alertStatus', 'success');
-      res.redirect('/admin/clients');
-    } catch (error) {
-      req.flash('alertMessage', `${error.message}`);
-      req.flash('alertStatus', 'danger');
-      res.redirect('/admin/clients');
-    }
-  },
-
   deleteProducts: async (req, res) => {
     try {
       const { id } = req.params;
@@ -234,6 +277,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | Clients',
         action: 'view',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -254,6 +298,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | Detail Client',
         action: 'detail',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -290,6 +335,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | Update Client',
         action: 'update',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -356,6 +402,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | News',
         action: 'view',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -376,6 +423,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | Detail News',
         action: 'detail',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -420,6 +468,7 @@ module.exports = {
         alert,
         title: 'WEBA Admin | Update News',
         action: 'update',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -466,22 +515,6 @@ module.exports = {
     }
   },
 
-  deleteClients: async (req, res) => {
-    try {
-      const { id } = req.params;
-      const clients = await Clients.findOne({ _id: id });
-      await fs.unlink(path.join(`public/${clients.imageUrl}`));
-      await clients.remove();
-      req.flash('alertMessage', 'Success Delete Data Client');
-      req.flash('alertStatus', 'success');
-      res.redirect('/admin/clients');
-    } catch (error) {
-      req.flash('alertMessage', `${error.message}`);
-      req.flash('alertStatus', 'danger');
-      res.redirect('/admin/clients');
-    }
-  },
-
   deleteNews: async (req, res) => {
     try {
       const { id } = req.params;
@@ -491,26 +524,6 @@ module.exports = {
       req.flash('alertMessage', 'Success Delete News Data');
       req.flash('alertStatus', 'success');
       res.redirect('/admin/news');
-    } catch (error) {
-      req.flash('alertMessage', `${error.message}`);
-      req.flash('alertStatus', 'danger');
-      res.redirect('/admin/news');
-    }
-  },
-
-  viewNews: async (req, res) => {
-    try {
-      const news = await News.find();
-      const alertMessage = req.flash('alertMessage');
-      const alertStatus = req.flash('alertStatus');
-      const alert = { message: alertMessage, status: alertStatus };
-      console.log(news);
-      res.render('admin/news/view_news', {
-        news,
-        alert,
-        title: 'WEBA Admin | News',
-        action: 'view',
-      });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
       req.flash('alertStatus', 'danger');
@@ -531,6 +544,7 @@ module.exports = {
         history,
         alert,
         action: 'view',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -554,6 +568,7 @@ module.exports = {
         history,
         alert,
         action: 'detail',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
@@ -613,6 +628,7 @@ module.exports = {
         history,
         alert,
         action: 'update',
+        user: req.session.user,
       });
     } catch (error) {
       req.flash('alertMessage', `${error.message}`);
