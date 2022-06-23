@@ -1,6 +1,6 @@
 <div
-  class="tab-pane fade"
-  id="add-history"
+  class="tab-pane fade show active"
+  id="detail-history"
   role="tabpanel"
   aria-labelledby="profile-tab"
 >
@@ -14,6 +14,8 @@
             class="form-control"
             name="jmlClient"
             placeholder="Masukkan jumlah client yang pernah bekerjasama"
+            value="<%= history.jmlClient %>"
+            readonly
             required
           />
         </div>
@@ -24,6 +26,8 @@
             class="form-control"
             name="jmlProject"
             placeholder="Masukkan jumlah project yang pernah dikerjakan"
+            value="<%= history.jmlProject %>"
+            readonly
             required
           />
         </div>
@@ -34,6 +38,8 @@
             class="form-control"
             name="jmlProdukJadi"
             placeholder="Masukkan jumlah produk jadi yang pernah diproduksi"
+            value="<%= history.jmlProdukJadi %>"
+            readonly
             required
           />
         </div>
@@ -44,6 +50,8 @@
             class="form-control"
             name="namaLeader"
             placeholder="Masukkan nama pimpinan dipisahkan dengan koma. Contoh: john doe, jenn dee"
+            value="<%= history.namaLeader%>"
+            readonly
             required
           />
         </div>
@@ -54,14 +62,24 @@
             class="form-control"
             name="jabatanLeader"
             placeholder="Masukkan jabatan pimpinan dipisahkan dengan koma. Contoh: manager, direktur"
+            value="<%= history.jabatanLeader %>"
+            readonly
             required
           />
         </div>
         <div class="form-group">
           <label for="name">Foto Pimpinan</label>
-          <input type="file" class="form-control" name="image" multiple required />
+          <br />
+          <% for( let i = 0; i < history.gambarId.length; i++ ) { %>
+          <img
+            src="http://localhost:3000/<%= history.gambarId[i].imageUrl %> "
+            alt="imageUrl"
+            height="200px"
+            style="object-fit: contain"
+          />
+          <% } %>
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+        <a href="/admin/history" class="btn btn-warning">Back</a>
       </form>
     </div>
   </div>

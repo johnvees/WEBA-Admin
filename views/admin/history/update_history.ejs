@@ -1,12 +1,16 @@
 <div
-  class="tab-pane fade"
-  id="add-history"
+  class="tab-pane fade show active"
+  id="update-history"
   role="tabpanel"
   aria-labelledby="profile-tab"
 >
   <div class="card shadow mb-4">
     <div class="card-body">
-      <form action="/admin/history" method="POST" enctype="multipart/form-data">
+      <form
+        action="/admin/history/update-history/<%= history.id %>?_method=PUT"
+        method="POST"
+        enctype="multipart/form-data"
+      >
         <div class="form-group">
           <label for="name">Jumlah Client</label>
           <input
@@ -14,6 +18,7 @@
             class="form-control"
             name="jmlClient"
             placeholder="Masukkan jumlah client yang pernah bekerjasama"
+            value="<%= history.jmlClient %>"
             required
           />
         </div>
@@ -24,6 +29,7 @@
             class="form-control"
             name="jmlProject"
             placeholder="Masukkan jumlah project yang pernah dikerjakan"
+            value="<%= history.jmlProject %>"
             required
           />
         </div>
@@ -34,6 +40,7 @@
             class="form-control"
             name="jmlProdukJadi"
             placeholder="Masukkan jumlah produk jadi yang pernah diproduksi"
+            value="<%= history.jmlProdukJadi %>"
             required
           />
         </div>
@@ -44,6 +51,7 @@
             class="form-control"
             name="namaLeader"
             placeholder="Masukkan nama pimpinan dipisahkan dengan koma. Contoh: john doe, jenn dee"
+            value="<%= history.namaLeader%>"
             required
           />
         </div>
@@ -54,14 +62,16 @@
             class="form-control"
             name="jabatanLeader"
             placeholder="Masukkan jabatan pimpinan dipisahkan dengan koma. Contoh: manager, direktur"
+            value="<%= history.jabatanLeader %>"
             required
           />
         </div>
         <div class="form-group">
           <label for="name">Foto Pimpinan</label>
-          <input type="file" class="form-control" name="image" multiple required />
+          <input type="file" class="form-control" name="image" multiple />
         </div>
-        <button type="submit" class="btn btn-primary">Add</button>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="/admin/history" class="btn btn-warning">Cancel</a>
       </form>
     </div>
   </div>

@@ -2,6 +2,7 @@ const Clients = require('../models/Client');
 const News = require('../models/Berita');
 const Products = require('../models/Product');
 const Image = require('../models/Image');
+const History = require('../models/Sejarah');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -497,10 +498,203 @@ module.exports = {
     }
   },
 
+  viewNews: async (req, res) => {
+    try {
+      const news = await News.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      console.log(news);
+      res.render('admin/news/view_news', {
+        news,
+        alert,
+        title: 'WEBA Admin | News',
+        action: 'view',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
   // endpoint history
-  viewHistory: (req, res) => {
-    res.render('admin/history/view_history', {
-      title: 'WEBA Admin | History',
-    });
+  viewHistory: async (req, res) => {
+    try {
+      const history = await History.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      console.log(history);
+      res.render('admin/history/view_history', {
+        title: 'WEBA Admin | History',
+        history,
+        alert,
+        action: 'view',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
+  },
+
+  detailHistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const history = await History.findOne({ _id: id }).populate({
+        path: 'gambarId',
+        select: 'id imageUrl',
+      });
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/history/view_history', {
+        title: 'WEBA Admin | Detail History',
+        history,
+        alert,
+        action: 'detail',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
+  },
+
+  addHistory: async (req, res) => {
+    try {
+      const {
+        jmlClient,
+        jmlProject,
+        jmlProdukJadi,
+        namaLeader,
+        jabatanLeader,
+      } = req.body;
+      if (req.files.length > 0) {
+        const newHistory = {
+          jmlClient,
+          jmlProject,
+          jmlProdukJadi,
+          namaLeader,
+          jabatanLeader,
+        };
+        const history = await History.create(newHistory);
+        for (let i = 0; i < req.files.length; i++) {
+          const imageSave = await Image.create({
+            imageUrl: `images/${req.files[i].filename}`,
+          });
+          history.gambarId.push({ _id: imageSave._id });
+          await history.save();
+        }
+      }
+      req.flash('alertMessage', 'Success Add New History');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/history');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
+  },
+
+  showUpdateHistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const history = await History.findOne({ _id: id }).populate({
+        path: 'gambarId',
+        select: 'id imageUrl',
+      });
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/history/view_history', {
+        title: 'WEBA Admin | Update History',
+        history,
+        alert,
+        action: 'update',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
+  },
+
+  updateHistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const {
+        jmlClient,
+        jmlProject,
+        jmlProdukJadi,
+        namaLeader,
+        jabatanLeader,
+      } = req.body;
+      const history = await History.findOne({ _id: id }).populate({
+        path: 'gambarId',
+        select: 'id imageUrl',
+      });
+      if (req.files.length > 0) {
+        for (let i = 0; i < history.gambarId.length; i++) {
+          const imageUpdate = await Image.findOne({
+            _id: history.gambarId[i]._id,
+          });
+          await fs.unlink(path.join(`public/${imageUpdate.imageUrl}`));
+          imageUpdate.imageUrl = `images/${req.files[i].filename}`;
+          await imageUpdate.save();
+        }
+        history.jmlClient = jmlClient;
+        history.jmlProject = jmlProject;
+        history.jmlProdukJadi = jmlProdukJadi;
+        history.namaLeader = namaLeader;
+        history.jabatanLeader = jabatanLeader;
+        await history.save();
+        req.flash('alertMessage', 'Success Update Data History');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/history');
+      } else {
+        history.jmlClient = jmlClient;
+        history.jmlProject = jmlProject;
+        history.jmlProdukJadi = jmlProdukJadi;
+        history.namaLeader = namaLeader;
+        history.jabatanLeader = jabatanLeader;
+        await history.save();
+        req.flash('alertMessage', 'Success Update Data History');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/history');
+      }
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
+  },
+
+  deleteHistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const history = await History.findOne({ _id: id }).populate('gambarId');
+      for (let i = 0; i < history.gambarId.length; i++) {
+        Image.findOne({ _id: history.gambarId[i]._id })
+          .then((image) => {
+            fs.unlink(path.join(`public/${image.imageUrl}`));
+            image.remove();
+          })
+          .catch((error) => {
+            req.flash('alertMessage', `${error.message}`);
+            req.flash('alertStatus', 'danger');
+            res.redirect('/admin/history');
+          });
+      }
+      await history.remove();
+      req.flash('alertMessage', 'Success Delete Data History');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/history');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/history');
+    }
   },
 };

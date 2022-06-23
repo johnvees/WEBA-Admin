@@ -16,7 +16,6 @@ router.put(
 );
 router.delete('/products/:id/delete', adminController.deleteProducts);
 
-
 // endpoint clients
 router.get('/clients', adminController.viewClients);
 router.post('/clients', uploadSingle, adminController.addClients);
@@ -39,5 +38,14 @@ router.delete('/news/:id/delete', adminController.deleteNews);
 
 // endpoint history
 router.get('/history', adminController.viewHistory);
+router.post('/history', uploadMultiple, adminController.addHistory);
+router.get('/history/detail-history/:id', adminController.detailHistory);
+router.get('/history/update-history/:id', adminController.showUpdateHistory);
+router.put(
+  '/history/update-history/:id',
+  uploadMultiple,
+  adminController.updateHistory
+);
+router.delete('/history/:id/delete', adminController.deleteHistory);
 
 module.exports = router;
