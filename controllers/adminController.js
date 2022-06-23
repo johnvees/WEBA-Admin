@@ -1,4 +1,5 @@
 const Clients = require('../models/Client');
+const News = require('../models/Berita');
 const fs = require('fs-extra');
 const path = require('path');
 
@@ -139,10 +140,158 @@ module.exports = {
   },
 
   // endpoint news
-  viewNews: (req, res) => {
-    res.render('admin/news/view_news', {
-      title: 'WEBA Admin | News',
-    });
+  viewNews: async (req, res) => {
+    try {
+      const news = await News.find();
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      console.log(news);
+      res.render('admin/news/view_news', {
+        news,
+        alert,
+        title: 'WEBA Admin | News',
+        action: 'view',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
+  detailNews: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const news = await News.findOne({ _id: id });
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/news/view_news', {
+        news,
+        alert,
+        title: 'WEBA Admin | Detail News',
+        action: 'detail',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
+  addNews: async (req, res) => {
+    try {
+      const { jenis, judul, deskripsi, penulis, tanggal, isi } = req.body;
+      console.log(req.file);
+      await News.create({
+        jenis,
+        judul,
+        deskripsi,
+        penulis,
+        tanggal,
+        isi,
+        imageUrl: `images/${req.file.filename}`,
+      });
+      req.flash('alertMessage', 'Success Add New News');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/news');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
+  showUpdateNews: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const news = await News.findOne({ _id: id });
+      console.log(news);
+      const alertMessage = req.flash('alertMessage');
+      const alertStatus = req.flash('alertStatus');
+      const alert = { message: alertMessage, status: alertStatus };
+      res.render('admin/news/view_news', {
+        news,
+        alert,
+        title: 'WEBA Admin | Update News',
+        action: 'update',
+      });
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
+  updateNews: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { jenis, judul, deskripsi, penulis, tanggal, isi } = req.body;
+      const news = await News.findOne({ _id: id });
+      console.log(news);
+      if (req.file == undefined) {
+        news.jenis = jenis;
+        news.judul = judul;
+        news.deskripsi = deskripsi;
+        news.penulis = penulis;
+        news.tanggal = tanggal;
+        news.isi = isi;
+        await news.save();
+        req.flash('alertMessage', 'Success Update News Data');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/news');
+      } else {
+        await fs.unlink(path.join(`public/${news.imageUrl}`));
+        news.jenis = jenis;
+        news.judul = judul;
+        news.deskripsi = deskripsi;
+        news.penulis = penulis;
+        news.tanggal = tanggal;
+        news.isi = isi;
+        news.imageUrl = `images/${req.file.filename}`;
+        await news.save();
+        req.flash('alertMessage', 'Success Update News Data');
+        req.flash('alertStatus', 'success');
+        res.redirect('/admin/news');
+      }
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
+  },
+
+  deleteClients: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const clients = await Clients.findOne({ _id: id });
+      await fs.unlink(path.join(`public/${clients.imageUrl}`));
+      await clients.remove();
+      req.flash('alertMessage', 'Success Delete Data Client');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/clients');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/clients');
+    }
+  },
+
+  deleteNews: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const news = await News.findOne({ _id: id });
+      await fs.unlink(path.join(`public/${news.imageUrl}`));
+      await news.remove();
+      req.flash('alertMessage', 'Success Delete News Data');
+      req.flash('alertStatus', 'success');
+      res.redirect('/admin/news');
+    } catch (error) {
+      req.flash('alertMessage', `${error.message}`);
+      req.flash('alertStatus', 'danger');
+      res.redirect('/admin/news');
+    }
   },
 
   // endpoint history

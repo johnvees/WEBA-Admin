@@ -27,6 +27,71 @@
               <th>Action</th>
             </tr>
           </thead>
+          <tbody>
+            <% for( let i = 0; i < news.length; i++ ) { %>
+            <tr>
+              <td><%= i + 1 %></td>
+              <td>
+                <div style="height: 200px; overflow: hidden">
+                  <%= news[i].jenis %>
+                </div>
+              </td>
+              <td>
+                <div style="height: 200px; overflow: hidden; width: 200px">
+                  <%= news[i].judul %>
+                </div>
+              </td>
+              <td>
+                <div style="height: 200px; overflow: hidden; width: 200px">
+                  <%= news[i].deskripsi %>
+                </div>
+              </td>
+              <td>
+                <div style="height: 200px; overflow: hidden">
+                  <%= news[i].penulis %>
+                </div>
+              </td>
+              <td>
+                <div style="height: 200px; overflow: hidden; width: 200px">
+                  <%= news[i].tanggal.toLocaleString().split(',')[0] %>
+                </div>
+              </td>
+              <td>
+                <div style="height: 200px; overflow: hidden; width: 200px">
+                  <%= news[i].isi %>
+                </div>
+              </td>
+              <td>
+                <img
+                  src="http://localhost:3000/<%= news[i].imageUrl %> "
+                  alt="imageUrl"
+                  height="200px"
+                  width="200px"
+                />
+              </td>
+              <td>
+                <form
+                  action="/admin/news/<%= news[i].id %>/delete?_method=DELETE"
+                  method="POST"
+                >
+                  <a
+                    href="/admin/news/detail-news/<%= news[i].id %>"
+                    class="btn btn-success btn-sm"
+                    ><i class="fas fa-eye"></i
+                  ></a>
+                  <a
+                    href="/admin/news/update-news/<%= news[i].id %>"
+                    class="btn btn-warning btn-sm"
+                    ><i class="fas fa-edit"></i
+                  ></a>
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
         </table>
       </div>
     </div>
