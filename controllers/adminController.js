@@ -17,7 +17,7 @@ module.exports = {
       if (req.session.user == null || req.session.user == undefined) {
         res.render('index', {
           alert,
-          title: 'Staycation | Login',
+          title: 'WEBA Admin | Login',
         });
       } else {
         res.redirect('/admin/dashboard');
