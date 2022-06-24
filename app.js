@@ -9,12 +9,15 @@ const methodOverride = require('method-override');
 
 // import mongoose
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/db_weba', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-});
+mongoose.connect(
+  'mongodb+srv://johnvees:webaadmin@cluster0.m5iymmz.mongodb.net/db_weba?retryWrites=true&w=majority',
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  }
+);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
