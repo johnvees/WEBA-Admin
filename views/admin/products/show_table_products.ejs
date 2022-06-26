@@ -32,7 +32,7 @@
               <td><%= i + 1 %></td>
               <td><%= products[i].kode %></td>
               <td><%= products[i].nama %></td>
-              <td><%= products[i].client.nama %></td>
+              <td><%= products[i].client?.nama %></td>
               <td>
                 <div style="max-height: 200px; overflow: hidden">
                   <%= products[i].deskripsi %>
